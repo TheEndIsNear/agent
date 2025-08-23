@@ -1,6 +1,7 @@
 import unittest
 from functions.get_files_info import get_files_info
 from functions.get_file_content import get_file_content
+from functions.write_file import write_file
 
 
 class TestFunctions(unittest.TestCase):
@@ -39,20 +40,28 @@ class TestFunctions(unittest.TestCase):
         )
         self.assertEqual(result, expected_result)
 
-    def test_get_file_content(self):
-        result = get_file_content("calculator", "main.py")
-        print(result)
-        print(get_file_content("calculator", "pkg/calculator.py"))
-
     def test_file_outside_of_working_directory(self):
         result = get_file_content("calculator", "/bin/cat")
         expected_result = 'Error: Cannot read "/bin/cat" as it is outside the permitted working directory\n'
         self.assertEqual(result, expected_result)
-        print(result)
 
     def test_file_that_does_not_exist(self):
         result = get_file_content("calculator", "pkg/does_not_exist.py")
         expected_result = 'Error: File not found or is not a regular file: pkg/does_not_exist.py\n'
+        self.assertEqual(result, expected_result)
+
+    def test_writing_to_file(self):
+        result = write_file("calculator", "lorem.txt",
+                            "wait, this isn't lorem ipsum")
+        print(result)
+        result = write_file("calculator", "pkg/morelorem.txt",
+                            "lorem ipsum dolar sit amet")
+        print(result)
+
+    def test_writing_to_non_permitted_location(self):
+        result = write_file("calculator", "/tmp/tmp.txt",
+                            "this should not be allowed")
+        expected_result = 'Error: Cannot write to "/tmp/tmp.txt" as it is outside the permitted working directory\n'
         self.assertEqual(result, expected_result)
         print(result)
 
